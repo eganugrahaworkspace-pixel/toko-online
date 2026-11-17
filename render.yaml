@@ -1,0 +1,22 @@
+# Blueprint Render untuk backend NestJS (apps/api).
+# Render > New > Blueprint > pilih repo ini.
+services:
+  - type: web
+    name: toko-online-api
+    runtime: node
+    rootDir: apps/api
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: API_KEYS
+        generateValue: true # salin nilainya ke API_KEY di Vercel
+      - key: CATALOG_UPSTREAM_URL
+        value: https://dummyjson.com
+      - key: PROMO_CODES
+        value: HEMAT10:10
