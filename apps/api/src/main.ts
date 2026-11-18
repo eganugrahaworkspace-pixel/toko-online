@@ -8,7 +8,9 @@ import { configureApp } from './app.setup.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Di belakang proxy (Render/Railway/Fly) supaya req.ip adalah IP asli.
-  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+  const server = app.getHttpAdapter().getInstance();
+  server.set('trust proxy', 1);
+  server.disable('x-powered-by');
   const config = configureApp(app);
 
   if (config.get('NODE_ENV', { infer: true }) !== 'production') {
@@ -31,4 +33,5 @@ async function bootstrap() {
   Logger.log(`API berjalan di http://localhost:${port}`, 'Bootstrap');
 }
 
-await bootstrap();
+// Tanpa top-level await agar kompatibel dengan builder yang meng-compile ke CommonJS.
+void bootstrap();
