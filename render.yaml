@@ -1,4 +1,4 @@
-# Blueprint Render untuk backend NestJS (apps/api).
+# Blueprint Render: backend NestJS + frontend Next.js.
 # Render > New > Blueprint > pilih repo ini.
 services:
   - type: web
@@ -15,8 +15,29 @@ services:
       - key: NODE_VERSION
         value: "22"
       - key: API_KEYS
-        generateValue: true # salin nilainya ke API_KEY di Vercel
+        generateValue: true # dibuat otomatis oleh Render, dipakai juga oleh web
       - key: CATALOG_UPSTREAM_URL
         value: https://dummyjson.com
       - key: PROMO_CODES
         value: HEMAT10:10
+
+  - type: web
+    name: toko-online-web
+    runtime: node
+    rootDir: apps/web
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Otomatis sama dengan API_KEYS di backend, tidak perlu copy-paste.
+      - key: API_KEY
+        fromService:
+          type: web
+          name: toko-online-api
+          envVarKey: API_KEYS
+      # Diisi saat membuat Blueprint: URL publik backend,
+      # biasanya https://toko-online-api.onrender.com
+      - key: API_BASE_URL
+        sync: false

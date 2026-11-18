@@ -67,13 +67,22 @@ Test backend (upstream di-mock): `npm test`
 
 ## Deploy
 
-1. **Backend → Render**: New → Blueprint → pilih repo ini (`render.yaml`). Salin nilai `API_KEYS`
-   yang di-generate Render.
-2. **Frontend → Vercel**: Project Settings → *Root Directory* = `apps/web`. Tambahkan env
-   `API_BASE_URL` (URL Render) dan `API_KEY` (nilai dari langkah 1), lalu redeploy.
+### Opsi A: Render (backend + frontend sekaligus)
+
+1. Render → **New → Blueprint** → pilih repo ini (`render.yaml`).
+2. Saat diminta nilai `API_BASE_URL`, isi `https://toko-online-api.onrender.com`
+   (cek URL asli backend di dashboard Render setelah dibuat; ubah kalau berbeda).
+3. `API_KEY` di frontend otomatis disamakan dengan `API_KEYS` di backend.
 
 > Paket gratis Render tidur setelah idle, jadi request pertama bisa lambat ~30–60 detik.
 > Halaman error frontend sudah menangani ini dengan tombol "Coba lagi".
+
+### Opsi B: Vercel
+
+- **Backend**: project baru, Root Directory `apps/api` (NestJS terdeteksi otomatis),
+  env `API_KEYS` (hasil `openssl rand -hex 32`) dan `NODE_ENV=production`.
+- **Frontend**: Root Directory `apps/web`, Node.js 22+, env `API_BASE_URL` (URL backend)
+  dan `API_KEY` (salah satu nilai `API_KEYS`).
 
 ## Tech stack
 
