@@ -127,6 +127,18 @@ describe('Toko Online API (e2e)', () => {
     });
   });
 
+  describe('rate limit', () => {
+    it('mengirim header limit dan tidak membatasi health check', async () => {
+      const res = await api()
+        .get('/v1/categories')
+        .set('x-api-key', API_KEY)
+        .expect(200);
+      expect(res.headers['x-ratelimit-limit']).toBe('1000');
+      const health = await api().get('/health').expect(200);
+      expect(health.headers['x-ratelimit-limit']).toBeUndefined();
+    });
+  });
+
   describe('POST /v1/cart/quote', () => {
     const quote = (body: object) =>
       api().post('/v1/cart/quote').set('x-api-key', API_KEY).send(body);
